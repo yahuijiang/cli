@@ -44,11 +44,27 @@ func newDockerCommand(dockerCli *command.DockerCli) *cobra.Command {
 		Version:               fmt.Sprintf("%s, build %s", cli.Version, cli.GitCommit),
 		DisableFlagsInUseLine: true,
 	}
+	//设置root command
+	// docker
 	cli.SetupRootCommand(cmd)
 
 	flags = cmd.Flags()
 	flags.BoolP("version", "v", false, "Print version information and quit")
+	//docker config 命令
 	flags.StringVar(&opts.ConfigDir, "config", cliconfig.Dir(), "Location of client config files")
+	/**Options:
+	--config string      Location of client config files (default "/Users/admin/.docker")
+	-D, --debug              Enable debug mode
+		--help               Print usage
+	-H, --host list          Daemon socket(s) to connect to (default )
+	-l, --log-level string   Set the logging level ("debug"|"info"|"warn"|"error"|"fatal") (default "info")
+		--tls                Use TLS; implied by --tlsverify
+		--tlscacert string   Trust certs signed only by this CA (default "/Users/admin/.docker/ca.pem")
+		--tlscert string     Path to TLS certificate file (default "/Users/admin/.docker/cert.pem")
+		--tlskey string      Path to TLS key file (default "/Users/admin/.docker/key.pem")
+		--tlsverify          Use TLS and verify the remote
+	-v, --version            Print version information and quit
+	**/
 	opts.Common.InstallFlags(flags)
 
 	setFlagErrorFunc(dockerCli, cmd, flags, opts)
@@ -56,6 +72,7 @@ func newDockerCommand(dockerCli *command.DockerCli) *cobra.Command {
 	setHelpFunc(dockerCli, cmd, flags, opts)
 
 	cmd.SetOutput(dockerCli.Out())
+	// 添加所有的commands
 	commands.AddCommands(cmd, dockerCli)
 
 	disableFlagsInUseLine(cmd)
